@@ -1,0 +1,24 @@
+2025-03-14 18:12:34,768 - INFO - USGS API success: 200
+2025-03-14 18:12:34,770 - INFO - Processing USGS data
+2025-03-14 18:12:34,774 - INFO - 127.0.0.1 - - [14/Mar/2025 18:12:34] "GET /api/disaster-news HTTP/1.1" 200 -
+2025-03-14 21:27:50,412 - INFO - USGS API success: 200
+2025-03-14 21:27:50,415 - INFO - Processing USGS data
+2025-03-14 21:27:50,419 - INFO - 127.0.0.1 - - [14/Mar/2025 21:27:50] "GET /api/disaster-news HTTP/1.1" 200 -
+2025-03-14 23:55:09,672 - INFO - USGS API success: 200
+2025-03-14 23:55:09,675 - INFO - Processing USGS data
+2025-03-14 23:55:09,678 - INFO - 127.0.0.1 - - [14/Mar/2025 23:55:09] "GET /api/disaster-news HTTP/1.1" 200 -
+
+2025-03-15 18:00:23,568 - INFO - USGS API success: 200
+2025-03-15 18:00:23,570 - INFO - Processing USGS data
+2025-03-15 18:00:23,574 - INFO - 127.0.0.1 - - [15/Mar/2025 18:00:23] "GET /api/disaster-news HTTP/1.1" 200 -
+
+2025-03-15 22:44:55,305 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-03-15 22:44:55,306 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-15 22:44:59,974 - INFO - 127.0.0.1 - - [15/Mar/2025 22:44:59] "[33mGET / HTTP/1.1[0m" 404 -
+2025-03-15 22:45:06,568 - INFO - USGS API success: 200
+2025-03-15 22:45:06,570 - INFO - Processing USGS data
+2025-03-15 22:45:06,574 - INFO - 127.0.0.1 - - [15/Mar/2025 22:45:06] "GET /api/disaster-news HTTP/1.1" 200 -
+2025-03-15 22:48:19,924 - INFO - USGS API success: 200
+2025-03-15 22:48:19,927 - INFO - Processing USGS data
+2025-03-15 22:48:19,929 - INFO - 127.0.0.1 - - [15/Mar/2025 22:48:19] "GET /api/disaster-news HTTP/1.1" 200 -
