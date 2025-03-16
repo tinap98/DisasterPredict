@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import MapComponent from './components/MapComponent';
+import DisasterNewsComponent from './components/DisasterNewsComponent';
 import { fetchDisasters } from './components/nasa';
-import './index.css'; 
+import './index.css';
 
 const App = () => {
   const [disasters, setDisasters] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [activeTab, setActiveTab] = useState('map'); 
 
   useEffect(() => {
     loadData();
@@ -35,27 +37,50 @@ const App = () => {
     <div className="app-container">
       <h1>NASA Real-Time Disaster Tracker</h1>
       
-      <div className="controls">
-        <select onChange={(e) => loadData(e.target.value)}>
-          <option value="">All Disasters</option>
-          <option value="wildfires">Wildfires</option>
-          <option value="severeStorms">Severe Storms</option>
-          <option value="volcanoes">Volcanoes</option>
-          <option value="earthquakes">Earthquakes</option>
-          <option value="landslides">Landslides</option>
-          <option value="floods">Floods</option>
-        </select>
+      <div className="app-tabs">
+        <button 
+          className={`tab-button ${activeTab === 'map' ? 'active' : ''}`}
+          onClick={() => setActiveTab('map')}
+        >
+          Disaster Map
+        </button>
+        <button 
+          className={`tab-button ${activeTab === 'news' ? 'active' : ''}`}
+          onClick={() => setActiveTab('news')}
+        >
+          Disaster News
+        </button>
       </div>
 
-      {loading && <div className="loading">Loading live data from NASA...</div>}
-      
-      {error && (
-        <div className="error">
-          {error} - Try refreshing the page or check <a href="https://eonet.gsfc.nasa.gov/" target="_blank" rel="noreferrer">NASA EONET</a>
-        </div>
+      {activeTab === 'map' && (
+        <>
+          <div className="controls">
+            <select onChange={(e) => loadData(e.target.value)}>
+              <option value="">All Disasters</option>
+              <option value="wildfires">Wildfires</option>
+              <option value="severeStorms">Severe Storms</option>
+              <option value="volcanoes">Volcanoes</option>
+              <option value="earthquakes">Earthquakes</option>
+              <option value="landslides">Landslides</option>
+              <option value="floods">Floods</option>
+            </select>
+          </div>
+          
+          {loading && <div className="loading">Loading live data from NASA...</div>}
+          
+          {error && (
+            <div className="error">
+              {error} - Try refreshing the page or check <a href="https://eonet.gsfc.nasa.gov/" target="_blank" rel="noreferrer">NASA EONET</a>
+            </div>
+          )}
+          
+          {!loading && !error && <MapComponent disasters={disasters} />}
+        </>
       )}
 
-      {!loading && !error && <MapComponent disasters={disasters} />}
+      {activeTab === 'news' && (
+        <DisasterNewsComponent />
+      )}
     </div>
   );
 };
