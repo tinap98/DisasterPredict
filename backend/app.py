@@ -5,16 +5,28 @@ import requests
 import os
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
+from database import db, bcrypt, init_db, User
+import jwt
 
 load_dotenv()
 app = Flask(__name__)
-CORS(app, resources={r"/api/*": {
-    "origins": ["http://localhost:5173", "http://127.0.0.1:5173"],
-    "methods": ["GET"],
-    "allow_headers": ["Content-Type"]
-}})
+
+CORS(app, 
+     origins=["http://localhost:5173"], 
+     methods=["GET", "POST", "OPTIONS"],
+     allow_headers=["Content-Type", "Authorization"],
+     supports_credentials=True,
+     max_age=3600)
+     
 cache = Cache(config={'CACHE_TYPE': 'SimpleCache'})
 cache.init_app(app)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'mysql://root:password@localhost/disasterpredict')
+app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'super-secret-fallback-key')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+init_db(app)
+bcrypt.init_app(app)
+
 NEWSAPI_KEY = os.getenv('NEWSAPI_KEY')
 GUARDIAN_KEY = os.getenv('GUARDIAN_KEY')
 
@@ -128,5 +140,61 @@ def health_check():
     """Simple health check endpoint"""
     return jsonify({"status": "ok", "timestamp": datetime.now().isoformat()})
 
+@app.route('/register', methods=['POST', 'OPTIONS'])
+def register():
+    if request.method == 'OPTIONS':
+        return jsonify({}), 200
+        
+    data = request.get_json()
+    if not data or 'username' not in data or 'email' not in data or 'password' not in data:
+        return jsonify({'error': 'Missing required fields'}), 400
+
+    if User.query.filter_by(username=data['username']).first():
+        return jsonify({'error': 'Username exists'}), 409
+    if User.query.filter_by(email=data['email']).first():
+        return jsonify({'error': 'Email exists'}), 409
+
+    try:
+        hashed_pw = bcrypt.generate_password_hash(data['password']).decode('utf-8')
+        user = User(
+            username=data['username'],
+            email=data['email'],
+            password=hashed_pw
+        )
+        db.session.add(user)
+        db.session.commit()
+        return jsonify({'message': 'User created successfully'}), 201
+    except Exception as e:
+        db.session.rollback()
+        app.logger.error(f"Registration error: {str(e)}")
+        return jsonify({'error': 'Server error'}), 500
+
+@app.route('/login', methods=['POST', 'OPTIONS'])
+def login():
+    if request.method == 'OPTIONS':
+        return jsonify({}), 200
+
+    data = request.get_json()
+    if not data or 'username' not in data or 'password' not in data:
+        return jsonify({'error': 'Missing credentials'}), 400
+
+    user = User.query.filter_by(username=data['username']).first()
+    if not user or not bcrypt.check_password_hash(user.password, data['password']):
+        return jsonify({'error': 'Invalid credentials'}), 401
+
+    try:
+        token = jwt.encode({
+            'user_id': user.id,
+            'exp': datetime.utcnow() + timedelta(hours=24)
+        }, app.config['JWT_SECRET_KEY'], algorithm='HS256')
+        
+        return jsonify({
+            'token': token,
+            'user_id': user.id,
+            'username': user.username
+        }), 200
+    except Exception as e:
+        app.logger.error(f"Login error: {str(e)}")
+        return jsonify({'error': 'Token generation failed'}), 500
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
