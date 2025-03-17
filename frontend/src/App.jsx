@@ -1,87 +1,41 @@
 import React, { useState, useEffect } from 'react';
-import MapComponent from './components/MapComponent';
-import DisasterNewsComponent from './components/DisasterNewsComponent';
-import { fetchDisasters } from './components/nasa';
-import './index.css';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Login from './components/Login';
+import Signup from './components/Signup';
+import Dashboard from './components/Dashboard';
 
 const App = () => {
-  const [disasters, setDisasters] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [activeTab, setActiveTab] = useState('map'); 
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    !!localStorage.getItem('authToken')
+  );
 
   useEffect(() => {
-    loadData();
+    setIsAuthenticated(!!localStorage.getItem('authToken'));
   }, []);
 
-  const loadData = async (category) => {
-    try {
-      setLoading(true);
-      const data = await fetchDisasters(category);
-      
-      if (data.length === 0) {
-        setError('No current disasters found');
-      } else {
-        setError(null);
-      }
-      
-      setDisasters(data);
-    } catch (err) {
-      setError('Failed to load disaster data');
-    } finally {
-      setLoading(false);
-    }
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setIsAuthenticated(!!localStorage.getItem('authToken'));
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('authToken');
+    setIsAuthenticated(false);
   };
 
   return (
-    <div className="app-container">
-      <h1>NASA Real-Time Disaster Tracker</h1>
-      
-      <div className="app-tabs">
-        <button 
-          className={`tab-button ${activeTab === 'map' ? 'active' : ''}`}
-          onClick={() => setActiveTab('map')}
-        >
-          Disaster Map
-        </button>
-        <button 
-          className={`tab-button ${activeTab === 'news' ? 'active' : ''}`}
-          onClick={() => setActiveTab('news')}
-        >
-          Disaster News
-        </button>
-      </div>
-
-      {activeTab === 'map' && (
-        <>
-          <div className="controls">
-            <select onChange={(e) => loadData(e.target.value)}>
-              <option value="">All Disasters</option>
-              <option value="wildfires">Wildfires</option>
-              <option value="severeStorms">Severe Storms</option>
-              <option value="volcanoes">Volcanoes</option>
-              <option value="earthquakes">Earthquakes</option>
-              <option value="landslides">Landslides</option>
-              <option value="floods">Floods</option>
-            </select>
-          </div>
-          
-          {loading && <div className="loading">Loading live data from NASA...</div>}
-          
-          {error && (
-            <div className="error">
-              {error} - Try refreshing the page or check <a href="https://eonet.gsfc.nasa.gov/" target="_blank" rel="noreferrer">NASA EONET</a>
-            </div>
-          )}
-          
-          {!loading && !error && <MapComponent disasters={disasters} />}
-        </>
-      )}
-
-      {activeTab === 'news' && (
-        <DisasterNewsComponent />
-      )}
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/login" element={!isAuthenticated ? <Login setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/dashboard" replace />} />
+        <Route path="/signup" element={!isAuthenticated ? <Signup /> : <Navigate to="/dashboard" replace />} />
+        <Route path="/dashboard" element={isAuthenticated ? <Dashboard handleLogout={handleLogout} /> : <Navigate to="/login" replace />} />
+        <Route path="/" element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />} />
+      </Routes>
+    </Router>
   );
 };
 
