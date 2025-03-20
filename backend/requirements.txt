@@ -1,0 +1,19 @@
+flask==3.0.2
+flask-cors==4.0.1
+flask-caching==2.1.0
+python-dotenv==1.0.1
+requests==2.31.0
+flask-sqlalchemy==3.1.1
+flask-bcrypt==1.0.2
+pyjwt==2.8.0
+mysqlclient==2.2.4  
+
+
+
+# first lets update pip
+
+''' python -m pip install --upgrade pip '''
+
+# lets install the dependecies
+
+''' pip install -r requirements.txt '''
