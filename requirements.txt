@@ -1,5 +1,4 @@
-
-
+# Backend dependencies
 flask
 flask-cors
 flask-caching
@@ -9,6 +8,16 @@ flask-sqlalchemy
 flask-bcrypt
 pyjwt
 mysqlclient
+
+# Machine Learning dependencies
+pandas
+numpy
+matplotlib
+seaborn
+scikit-learn
+jupyter
+joblib
+
 # first lets update pip
 
 # ''' python.exe -m pip install --upgrade pip '''
