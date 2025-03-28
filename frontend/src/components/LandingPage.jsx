@@ -51,6 +51,11 @@ const LandingPage = ({ isAuthenticated, handleLogout }) => {
           Stay informed with real-time disaster tracking and news updates powered by NASA and other reliable sources.
         </p>
       </div>
+
+      {/* Footer */}
+      <footer className="footer">
+        &copy; {new Date().getFullYear()} DisasterPredict. All rights reserved.
+      </footer>
     </div>
   );
 };
