@@ -1,16 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const DonationForm = ({ userId }) => {
     const [amount, setAmount] = useState('');
     const [currency, setCurrency] = useState('USD');
-    const [cardNumber, setCardNumber] = useState('•••• •••• •••• 1234');
-    const [expiry, setExpiry] = useState('12/25');
-    const [cvc, setCvc] = useState('•••');
     const [isProcessing, setIsProcessing] = useState(false);
     const [transaction, setTransaction] = useState(null);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!userId) {
+            navigate('/login');
+        }
+    }, [userId, navigate]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -80,10 +83,9 @@ const DonationForm = ({ userId }) => {
                             <label>Card Number:</label>
                             <input
                                 type="text"
-                                value={cardNumber}
-                                pattern="\d*"
+                                value="•••• •••• •••• 1234"
                                 disabled
-                                placeholder="Mock payment disabled"
+                                className="mock-field"
                             />
                         </div>
                         
@@ -92,22 +94,24 @@ const DonationForm = ({ userId }) => {
                                 <label>Expiry:</label>
                                 <input
                                     type="text"
-                                    value={expiry}
+                                    value="12/25"
                                     disabled
+                                    className="mock-field"
                                 />
                             </div>
                             <div>
                                 <label>CVC:</label>
                                 <input
                                     type="text"
-                                    value={cvc}
+                                    value="•••"
                                     disabled
+                                    className="mock-field"
                                 />
                             </div>
                         </div>
                     </div>
 
-                    <button type="submit" disabled={isProcessing}>
+                    <button type="submit" disabled={isProcessing || !amount}>
                         {isProcessing ? 'Processing...' : 'Donate Now'}
                     </button>
                     <p className="mock-notice">Note: This is a mock payment system. No real transactions will occur.</p>
@@ -117,7 +121,7 @@ const DonationForm = ({ userId }) => {
                     <h2>Thank you for your generosity!💖</h2>
                     <p>We've successfully processed your donation of {transaction.amount} {transaction.currency}.</p>
                     <p>Transaction ID: {transaction.transaction_id}</p>
-                    <button onClick={() => navigate('/')}>Return Home</button>
+                    <button onClick={() => navigate('/home')}>Return Home</button>
                 </div>
             )}
         </div>
