@@ -17,7 +17,6 @@ const App = () => {
     const token = localStorage.getItem('authToken');
     if (token) {
       setIsAuthenticated(true);
-      // In a real app, fetch user data from token here
       setCurrentUser({ id: 1, name: "User" }); // Mock user
     }
   }, []);
@@ -56,7 +55,7 @@ const App = () => {
           />
           <Route 
             path="/donate" 
-            element={isAuthenticated ? <DonationForm userId={currentUser?.id} /> : <Navigate to="/login" replace />} 
+            element={<DonationForm userId={currentUser?.id} />} // ✅ No auth check
           />
           <Route 
             path="/" 

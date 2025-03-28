@@ -30,10 +30,7 @@ const LandingPage = ({ isAuthenticated, handleLogout }) => {
 
         {/* Auth Buttons */}
         {isAuthenticated ? (
-          <button
-            onClick={handleLogout}
-            className="btn-primary"
-          >
+          <button onClick={handleLogout} className="btn-primary">
             Logout
           </button>
         ) : (
