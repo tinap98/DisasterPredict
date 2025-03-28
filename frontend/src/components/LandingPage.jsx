@@ -52,10 +52,13 @@ const LandingPage = ({ isAuthenticated, handleLogout }) => {
         </p>
       </div>
 
-      {/* Footer */}
-      <footer className="footer">
-        &copy; {new Date().getFullYear()} DisasterPredict. All rights reserved.
-      </footer>
+      {/* Donate Section */}
+      <div className="flex flex-col items-center pb-10">
+        <h2 className="text-2xl font-semibold text-center mb-4">Support Relief Efforts</h2>
+        <Link to="/donate" className="donate-button">
+          Donate Now
+        </Link>
+      </div>
     </div>
   );
 };

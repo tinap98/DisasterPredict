@@ -2,65 +2,73 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const Login = ({ setIsAuthenticated }) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+const Login = () => {
+  const [formData, setFormData] = useState({ username: "", password: "" });
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:5000/login", {
-        username,
-        password,
-      });
-
-      localStorage.setItem("authToken", response.data.token);
-      setIsAuthenticated(true);
-      navigate("/home");
+      await axios.post("http://localhost:5000/login", formData);
+      alert("Login successful!");
+      navigate("/dashboard");
     } catch (error) {
       alert(error.response?.data?.error || "Login failed");
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-black">
-      <form
-        onSubmit={handleLogin}
-        className="bg-black/60 shadow-lg rounded-lg p-8 w-96 border border-amber-500"
-      >
-        <h2 className="text-2xl font-bold text-center text-amber-400 mb-6">
+    <div
+      className="relative flex items-center justify-center min-h-screen bg-cover bg-center"
+      style={{ backgroundImage: "url('/images/world_map.jpg')" }}
+    >
+      {/* Dark Overlay */}
+      <div className="absolute inset-0 bg-black/70"></div>
+
+      {/* Login Box */}
+      <div className="relative z-10 w-full max-w-md p-8 bg-black border border-gray-700 shadow-lg rounded-xl">
+        <h2 className="text-3xl font-semibold text-center text-amber-500 mb-6">
           Login
         </h2>
-        <input
-          type="text"
-          placeholder="Enter your username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          required
-          className="w-full p-3 bg-gray-900 border border-amber-500 rounded-md mb-4 focus:ring-2 focus:ring-amber-400 focus:outline-none placeholder-black placeholder-opacity-70 text-white"
-        />
-        <input
-          type="password"
-          placeholder="Enter your password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          className="w-full p-3 bg-gray-900 border border-amber-500 rounded-md mb-6 focus:ring-2 focus:ring-amber-400 focus:outline-none placeholder-black placeholder-opacity-70 text-white"
-        />
-        <button
-          type="submit"
-          className="w-full bg-amber-500 text-black font-semibold p-3 rounded-md hover:bg-amber-600 transition-all duration-300"
-        >
-          Log In
-        </button>
-        <p className="mt-4 text-center text-gray-300">
+
+        <form className="space-y-5" onSubmit={handleLogin}>
+          <input
+            type="text"
+            placeholder="Username"
+            value={formData.username}
+            onChange={(e) =>
+              setFormData({ ...formData, username: e.target.value })
+            }
+            required
+            className="w-full p-3 bg-black border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-amber-500 focus:outline-none"
+          />
+
+          <input
+            type="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={(e) =>
+              setFormData({ ...formData, password: e.target.value })
+            }
+            required
+            className="w-full p-3 bg-black border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-amber-500 focus:outline-none"
+          />
+
+          <button
+            type="submit"
+            className="w-full p-3 text-black bg-amber-500 font-semibold rounded-lg hover:bg-amber-600 focus:ring-2 focus:ring-amber-500 transition-all"
+          >
+            Log In
+          </button>
+        </form>
+
+        <p className="mt-4 text-center text-gray-400">
           New user?{" "}
-          <a href="/signup" className="text-amber-400 hover:underline">
+          <a href="/signup" className="text-amber-500 hover:underline">
             Create an account
           </a>
         </p>
-      </form>
+      </div>
     </div>
   );
 };

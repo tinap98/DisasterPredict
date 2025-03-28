@@ -81,8 +81,8 @@
 
 /* Buttons */
 .btn-primary {
-  background-color: #ffc107;
-  color: #1e1e1e;
+  background-color: #ffcc40; /* Light amber */
+  color: #000000 !important; /* Black text for visibility */
   padding: 10px 20px;
   border-radius: 5px;
   font-weight: bold;
@@ -90,16 +90,10 @@
 }
 
 .btn-primary:hover {
-  background-color: #ffdd57;
+  background-color: #ffdb6d; /* Lighter amber on hover */
+  color: #000000 !important; /* Keep text black */
 }
 
-/* Footer */
-.footer {
-  background-color: #1e1e1e;
-  color: #ffc107;
-  text-align: center;
-  padding: 1rem;
-}
 
 /* Background Image Styling */
 .bg-custom {
@@ -127,3 +121,4 @@
   position: relative;
   z-index: 2;
 }
+

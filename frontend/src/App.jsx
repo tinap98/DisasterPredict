@@ -5,28 +5,27 @@ import Signup from './components/Signup';
 import LandingPage from './components/LandingPage';
 import DisasterNewsComponent from './components/DisasterNewsComponent';
 import MapComponent from './components/MapComponent';
+import DonationForm from './components/DonationForm';
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(
     !!localStorage.getItem('authToken')
   );
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
-    setIsAuthenticated(!!localStorage.getItem('authToken'));
-  }, []);
-
-  useEffect(() => {
-    const handleStorageChange = () => {
-      setIsAuthenticated(!!localStorage.getItem('authToken'));
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      setIsAuthenticated(true);
+      // In a real app, fetch user data from token here
+      setCurrentUser({ id: 1, name: "User" }); // Mock user
+    }
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('authToken');
     setIsAuthenticated(false);
+    setCurrentUser(null);
   };
 
   return (
@@ -35,7 +34,9 @@ const App = () => {
         <Routes>
           <Route 
             path="/login" 
-            element={!isAuthenticated ? <Login setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/home" replace />} 
+            element={!isAuthenticated ? 
+              <Login setIsAuthenticated={setIsAuthenticated} setCurrentUser={setCurrentUser} /> : 
+              <Navigate to="/home" replace />} 
           />
           <Route 
             path="/signup" 
@@ -52,6 +53,10 @@ const App = () => {
           <Route 
             path="/disaster-map" 
             element={<MapComponent />} 
+          />
+          <Route 
+            path="/donate" 
+            element={isAuthenticated ? <DonationForm userId={currentUser?.id} /> : <Navigate to="/login" replace />} 
           />
           <Route 
             path="/" 
