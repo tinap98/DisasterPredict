@@ -8,17 +8,19 @@ import MapComponent from './components/MapComponent';
 import DonationForm from './components/DonationForm';
 
 const App = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(
-    !!localStorage.getItem('authToken')
-  );
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem('authToken');
     if (token) {
+      // In real app, you would fetch user data from the token
+      const mockUser = { id: 1, name: "Test User" };
+      setCurrentUser(mockUser);
       setIsAuthenticated(true);
-      setCurrentUser({ id: 1, name: "User" }); // Mock user
     }
+    setIsLoading(false);
   }, []);
 
   const handleLogout = () => {
@@ -26,6 +28,10 @@ const App = () => {
     setIsAuthenticated(false);
     setCurrentUser(null);
   };
+
+  if (isLoading) {
+    return <div className="min-h-screen bg-gray-100 flex items-center justify-center">Loading...</div>;
+  }
 
   return (
     <Router>
@@ -47,19 +53,23 @@ const App = () => {
           />
           <Route 
             path="/disaster-news" 
-            element={<DisasterNewsComponent />} 
+            element={isAuthenticated ? <DisasterNewsComponent /> : <Navigate to="/login" replace />} 
           />
           <Route 
             path="/disaster-map" 
-            element={<MapComponent />} 
+            element={isAuthenticated ? <MapComponent /> : <Navigate to="/login" replace />} 
           />
           <Route 
             path="/donate" 
-            element={<DonationForm userId={currentUser?.id} />} // ✅ No auth check
+            element={
+              isAuthenticated && currentUser ? 
+                <DonationForm userId={currentUser.id} /> : 
+                <Navigate to="/login" replace />
+            } 
           />
           <Route 
             path="/" 
-            element={<Navigate to="/home" replace />} 
+            element={<Navigate to={isAuthenticated ? "/home" : "/login"} replace />} 
           />
         </Routes>
       </div>
