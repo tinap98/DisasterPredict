@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import MapComponent from './MapComponent';
 import DisasterNewsComponent from './DisasterNewsComponent';
 import { fetchDisasters } from './nasa';
 import '../index.css';
 
-const Dashboard = ({ handleLogout }) => {
+const Dashboard = ({ handleLogout, user }) => {
   const [disasters, setDisasters] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -37,9 +38,14 @@ const Dashboard = ({ handleLogout }) => {
     <div className="app-container">
       <div className="dashboard-header">
         <h1>NASA Real-Time Disaster Tracker</h1>
-        <button onClick={handleLogout} className="logout-button">
-          Logout
-        </button>
+        <div className="header-buttons">
+          <Link to="/donate" className="donate-button">
+            Support Relief Efforts
+          </Link>
+          <button onClick={handleLogout} className="logout-button">
+            Logout
+          </button>
+        </div>
       </div>
 
       <div className="app-tabs">
