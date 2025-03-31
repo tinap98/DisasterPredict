@@ -10,6 +10,7 @@ pyjwt
 mysqlclient
 
 # Machine Learning dependencies
+ipykenrnel
 pandas
 numpy
 matplotlib
@@ -17,6 +18,13 @@ seaborn
 scikit-learn
 jupyter
 joblib
+openpyxl
+imblearn
+
+#for running the notebook run this:
+
+# python -m ipykernel install --user --name=myvenv --display-name "Python (myvenv)"
+# and select your venv kernal!!
 
 # first lets update pip
 
