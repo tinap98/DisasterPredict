@@ -20,7 +20,7 @@ jupyter
 joblib
 openpyxl
 imblearn
-
+chardet 
 #for running the notebook run this:
 
 # python -m ipykernel install --user --name=myvenv --display-name "Python (myvenv)"
