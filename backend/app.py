@@ -14,10 +14,8 @@ from config import Config  # Assuming you have a Config class defined in backend
 from database import init_db, bcrypt
 from models.user import User
 from models.donation import Donation
-from ml.prediction.predictor import DisasterPredictor
 
 app = Flask(__name__)
-predictor = DisasterPredictor()
 
 # Set up CORS for your frontend
 CORS(app, 
@@ -42,7 +40,6 @@ bcrypt.init_app(app)
 from routes.auth_routes import auth_bp
 from routes.news_routes import news_bp
 from routes.donation_routes import donation_bp
-from routes.prediction_routes import prediction_bp
 
 import routes.news_routes
 routes.news_routes.cache = cache
@@ -50,7 +47,6 @@ routes.news_routes.cache = cache
 app.register_blueprint(auth_bp)
 app.register_blueprint(news_bp)
 app.register_blueprint(donation_bp, url_prefix='/api')
-app.register_blueprint(prediction_bp, url_prefix='/api')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
