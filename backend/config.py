@@ -10,3 +10,4 @@ class Config:
     
     NEWSAPI_KEY = os.getenv('NEWSAPI_KEY')
     GUARDIAN_KEY = os.getenv('GUARDIAN_KEY')
+    

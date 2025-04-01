@@ -22,3 +22,12 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+*/__pycache__/
+*.pyc
+# Dependencies  
+node_modules/  
+package-lock.json  
+
+# Build output  
+dist/  
+.vite/  

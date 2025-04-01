@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import "../styles/DisasterNews.css";
 
 const DisasterNewsComponent = () => {
   const [news, setNews] = useState([]);
@@ -51,59 +50,55 @@ const DisasterNewsComponent = () => {
 
   if (loading) {
     return (
-      <div className="disaster-news-container">
-        <h2>Latest Disaster News</h2>
-        <div className="news-loading"><p>Loading latest disaster news...</p></div>
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <p className="text-xl text-amber-400">Loading latest disaster news...</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="disaster-news-container">
-        <h2>Latest Disaster News</h2>
-        <div className="news-error">
-          <p>Sorry, we couldn't load the latest news. Please try again later.</p>
-          <p>Error: {error}</p>
-        </div>
+      <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center">
+        <p className="text-xl text-amber-400">Sorry, we couldn't load the latest news.</p>
+        <p className="text-md text-amber-300">Error: {error}</p>
       </div>
     );
   }
 
   if (news.length === 0) {
     return (
-      <div className="disaster-news-container">
-        <h2>Latest Disaster News</h2>
-        <div className="news-empty"><p>No disaster news found at this time. Please come back later.</p></div>
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <p className="text-xl text-amber-400">No disaster news found at this time. Please come back later.</p>
       </div>
     );
   }
 
   return (
-    <div className="disaster-news-container">
-      <h2>Latest Disaster News</h2>
-      <div className="news-list">
+    <div className="bg-black text-white min-h-screen px-6 py-10">
+      <h2 className="text-center text-3xl font-semibold text-amber-400 mb-6">
+        Latest Disaster News
+      </h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {news.map((article) => (
           <a
             key={article.id || article.url}
             href={article.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="news-item"
+            className="bg-gray-800 border border-amber-400 rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition transform duration-300"
           >
-            <div className="news-image">
-              <img 
-                src={article.image || placeholderImage} 
-                alt={article.title}
-                onError={(e) => { e.target.onerror = null; e.target.src = placeholderImage; }}
-              />
-            </div>
-            <div className="news-content">
-              <h3>{article.title}</h3>
-              <p className="news-description">{truncateContent(article.content)}</p>
-              <div className="news-meta">
-                <span className="news-source">{article.source}</span>
-                <span className="news-date">{formatDate(article.published)}</span>
+            <img 
+              src={article.image || placeholderImage} 
+              alt={article.title}
+              onError={(e) => { e.target.onerror = null; e.target.src = placeholderImage; }}
+              className="w-full h-48 object-cover"
+            />
+            <div className="p-5">
+              <h3 className="text-lg font-bold text-white">{article.title}</h3>
+              <p className="text-sm text-gray-300 mt-2">{truncateContent(article.content)}</p>
+              <div className="mt-4 flex justify-between text-sm text-amber-300">
+                <span>{article.source}</span>
+                <span>{formatDate(article.published)}</span>
               </div>
             </div>
           </a>
