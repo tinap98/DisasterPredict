@@ -1,7 +1,7 @@
 1) download public_emdat dataset
 2) download disaster_type_data
-3) run disaster_type_model.ipynb notebook file
-4) run disaster_preprocessing.py 
-5) run disaster_prediction_model.py
-6) run predict_disaster.py
-7) run predict_seviarity.py
+3) run disastertype_model_create.ipynb notebook file
+4) run seviratity_preprocessing.py 
+5) run seviarity_model_create.py
+6) run dt_output.py
+7) run final_model_create.py
