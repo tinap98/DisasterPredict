@@ -1,13 +1,15 @@
 import os
-import joblib
+from pathlib import Path
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# BASE_DIR now points to the directory containing this file (i.e. backend/ml)
+BASE_DIR = Path(__file__).resolve().parent
 
 PATHS = {
-    'processed': os.path.join(BASE_DIR, 'processed'),
-    'models': os.path.join(BASE_DIR, 'models'),
-    'reports': os.path.join(BASE_DIR, 'reports'),
-    'features': os.path.join(BASE_DIR, 'reports/feature_importance/selected_features.csv')
+    'raw_data': BASE_DIR / 'datasets/public_emdat.xlsx',
+    'processed': BASE_DIR / 'processed',
+    'models': BASE_DIR / 'models',
+    'reports': BASE_DIR / 'reports',
+    'features': BASE_DIR / 'reports/feature_importance/selected_features.csv'
 }
 
 MODEL_CONFIG = {

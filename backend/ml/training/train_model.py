@@ -1,48 +1,78 @@
 import os
+import sys
 import joblib
 import pandas as pd
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import classification_report
-from config import PATHS, MODEL_CONFIG
 import matplotlib.pyplot as plt
 import seaborn as sns
+from pathlib import Path
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report, confusion_matrix
+import logging
 
-def train_model():
-    # Load processed data
-    X_train = joblib.load(os.path.join(PATHS['processed'], 'X_train.pkl'))
-    y_train = joblib.load(os.path.join(PATHS['processed'], 'y_train.pkl'))
-    X_test = joblib.load(os.path.join(PATHS['processed'], 'X_test.pkl'))
-    y_test = joblib.load(os.path.join(PATHS['processed'], 'y_test.pkl'))
+# Setup logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-    # Initialize and train model
+# Add the project root (D:\DisasterPredict\backend) to sys.path
+project_root = Path(__file__).resolve().parents[2]
+sys.path.append(str(project_root))
+logging.info("Added project root to sys.path: %s", project_root)
+
+# Now import configuration settings from ml.config
+from ml.config import PATHS, MODEL_CONFIG
+
+def validate_paths():
+    """Ensure all required processed data files exist."""
+    required = [
+        (PATHS['processed'], 'X_train.pkl'),
+        (PATHS['processed'], 'y_train.pkl'),
+        (PATHS['processed'], 'X_test.pkl'),
+        (PATHS['processed'], 'y_test.pkl')
+    ]
+    for path, file in required:
+        full_path = Path(path) / file
+        if not full_path.exists():
+            logging.error("Missing file: %s", full_path)
+            raise FileNotFoundError(f"Missing: {full_path}")
+    logging.info("All required data files are present.")
+
+def main():
+    validate_paths()
+    
+    processed_path = Path(PATHS['processed'])
+    X_train = joblib.load(processed_path / 'X_train.pkl')
+    y_train = joblib.load(processed_path / 'y_train.pkl')
+    X_test = joblib.load(processed_path / 'X_test.pkl') 
+    y_test = joblib.load(processed_path / 'y_test.pkl')
+    
+    # Train the RandomForest model with settings from configuration
     model = RandomForestClassifier(**MODEL_CONFIG)
-    print("🔄 Training disaster classification model...")
+    logging.info("Training model...")
     model.fit(X_train, y_train)
     
-    # Save model
-    joblib.dump(model, os.path.join(PATHS['models'], 'disaster_classifier.pkl'))
-    print(f"✅ Model saved to {PATHS['models']}/disaster_classifier.pkl")
+    # Save the trained model
+    models_dir = Path(PATHS['models'])
+    models_dir.mkdir(parents=True, exist_ok=True)
+    model_path = models_dir / 'disaster_classifier.pkl'
+    joblib.dump(model, model_path)
+    logging.info("Model saved to %s", model_path)
     
-    return model, X_test, y_test
-
-def evaluate_model(model, X_test, y_test):
-    # Generate predictions
+    # Evaluate on the test set
     y_pred = model.predict(X_test)
+    report = classification_report(y_test, y_pred, zero_division=0)
+    logging.info("Classification Report:\n%s", report)
+    print(report)
     
-    # Classification report
-    print("\n📊 Classification Report:")
-    print(classification_report(y_test, y_pred, zero_division=0))
-    
-    # Confusion matrix
+    # Plot and save the confusion matrix
     plt.figure(figsize=(12, 10))
     cm = confusion_matrix(y_test, y_pred)
     sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
-    plt.title('Disaster Type Confusion Matrix')
-    plt.xlabel('Predicted')
-    plt.ylabel('Actual')
-    plt.savefig(os.path.join(PATHS['reports'], 'confusion_matrix.png'))
-    print(f"📈 Confusion matrix saved to {PATHS['reports']}/confusion_matrix.png")
+    plt.title('Confusion Matrix')
+    reports_dir = Path(PATHS['reports'])
+    reports_dir.mkdir(parents=True, exist_ok=True)
+    confusion_path = reports_dir / 'confusion_matrix.png'
+    plt.savefig(confusion_path)
+    plt.close()
+    logging.info("Confusion matrix saved to %s", confusion_path)
 
 if __name__ == "__main__":
-    model, X_test, y_test = train_model()
-    evaluate_model(model, X_test, y_test)
+    main()
