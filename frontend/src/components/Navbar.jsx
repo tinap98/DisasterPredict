@@ -30,6 +30,12 @@ const Navbar = ({ isAuthenticated, handleLogout }) => {
         <Link to="/disaster-map" onClick={(e) => handleRestrictedAccess(e, "/disaster-map")} className="hover:underline">
           Disaster Map
         </Link>
+        <Link 
+          to="/predict-disaster" 
+          onClick={(e) => handleRestrictedAccess(e, "/predict-disaster")} 
+          className="hover:underline">
+          Predict Disaster
+        </Link>
         <Link to="/donate" onClick={(e) => handleRestrictedAccess(e, "/donate")} className="hover:underline font-semibold text-yellow-300">
           Donate
         </Link>
