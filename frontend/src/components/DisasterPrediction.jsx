@@ -1,6 +1,4 @@
-
-
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 
 function DisasterPrediction() {
   const [year, setYear] = useState(1900);
@@ -12,6 +10,9 @@ function DisasterPrediction() {
   const [prediction, setPrediction] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  
+  // Ref for the output/error message section
+  const outputRef = useRef(null);
 
   const magnitudeScaleMapping = {
     0: "Km²",
@@ -59,17 +60,16 @@ function DisasterPrediction() {
     224: 'Yemen P Dem Rep', 225: 'Yugoslavia', 226: 'Zambia', 227: 'Zimbabwe'
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-  
+
     try {
-      const response = await fetch('http://localhost:5000/api/predict', {
-        method: 'POST',
+      const response = await fetch("http://localhost:5000/api/predict", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           year: parseInt(year),
@@ -77,25 +77,28 @@ function DisasterPrediction() {
           dis_mag_value: parseFloat(disMagValue),
           country_code_index: parseInt(countryCode),
           longitude: parseFloat(longitude),
-          latitude: parseFloat(latitude)
-        })
+          latitude: parseFloat(latitude),
+        }),
       });
-  
+
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-      
+
       const data = await response.json();
-      if (!data.success) throw new Error(data.error || 'Prediction failed');
-      
+      if (!data.success) throw new Error(data.error || "Prediction failed");
+
       setPrediction(data);
+      // Scroll to the output section
+      outputRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } catch (error) {
       setError(error.message);
+      // Scroll to the error message
+      outputRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
       console.error("Fetch error:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  // Helper function to map disaster labels to names
   const getDisasterName = (label) => {
     const disasterMap = {
       0: "Other",
@@ -112,106 +115,128 @@ function DisasterPrediction() {
       11: "Mass movement (dry)",
       12: "Storm",
       13: "Volcanic activity",
-      14: "Wildfire"
+      14: "Wildfire",
     };
-    return disasterMap[label] || 'Unknown';
+    return disasterMap[label] || "Unknown";
   };
 
   return (
-    <div>
-      <h1>Disaster Prediction App</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Year:</label>
-          <input 
-            type="number" 
-            value={year} 
-            onChange={(e) => setYear(e.target.value)} 
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white p-6">
+      <h1 className="text-3xl font-bold text-amber-400 mb-6">Disaster Prediction App</h1>
+
+      <form
+        onSubmit={handleSubmit}
+        className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md transition-shadow duration-300 hover:shadow-2xl"
+      >
+        <div className="mb-4">
+          <label className="block text-amber-400 font-semibold">Year:</label>
+          <input
+            type="number"
+            value={year}
+            onChange={(e) => setYear(e.target.value)}
             min="1900"
             max={new Date().getFullYear()}
             required
+            className="w-full p-2 rounded bg-gray-700 text-white focus:ring-2 focus:ring-amber-400 outline-none transition-all duration-300"
           />
         </div>
-        
-        <div>
-          <label>Magnitude Scale:</label>
-          <select 
-            value={magScale} 
+
+        <div className="mb-4">
+          <label className="block text-amber-400 font-semibold">Magnitude Scale:</label>
+          <select
+            value={magScale}
             onChange={(e) => setMagScale(e.target.value)}
             required
+            className="w-full p-2 rounded bg-gray-700 text-white focus:ring-2 focus:ring-amber-400 outline-none transition-all duration-300"
           >
             {Object.entries(magnitudeScaleMapping).map(([key, value]) => (
-              <option key={key} value={key}>{value}</option>
+              <option key={key} value={key}>
+                {value}
+              </option>
             ))}
           </select>
         </div>
-        
-        <div>
-          <label>Disaster Magnitude Value:</label>
-          <input 
-            type="number" 
-            value={disMagValue} 
-            onChange={(e) => setDisMagValue(e.target.value)} 
+
+        <div className="mb-4">
+          <label className="block text-amber-400 font-semibold">Disaster Magnitude Value:</label>
+          <input
+            type="number"
+            value={disMagValue}
+            onChange={(e) => setDisMagValue(e.target.value)}
             step="0.01"
             required
+            className="w-full p-2 rounded bg-gray-700 text-white focus:ring-2 focus:ring-amber-400 outline-none transition-all duration-300"
           />
         </div>
-        
-        <div>
-          <label>Longitude:</label>
-          <input 
-            type="number" 
-            value={longitude} 
-            onChange={(e) => setLongitude(e.target.value)} 
-            step="0.000001"
-            min="-180"
-            max="180"
-            required
-          />
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-amber-400 font-semibold">Longitude:</label>
+            <input
+              type="number"
+              value={longitude}
+              onChange={(e) => setLongitude(e.target.value)}
+              step="0.000001"
+              min="-180"
+              max="180"
+              required
+              className="w-full p-2 rounded bg-gray-700 text-white focus:ring-2 focus:ring-amber-400 outline-none transition-all duration-300"
+            />
+          </div>
+
+          <div>
+            <label className="block text-amber-400 font-semibold">Latitude:</label>
+            <input
+              type="number"
+              value={latitude}
+              onChange={(e) => setLatitude(e.target.value)}
+              step="0.000001"
+              min="-90"
+              max="90"
+              required
+              className="w-full p-2 rounded bg-gray-700 text-white focus:ring-2 focus:ring-amber-400 outline-none transition-all duration-300"
+            />
+          </div>
         </div>
-        
-        <div>
-          <label>Latitude:</label>
-          <input 
-            type="number" 
-            value={latitude} 
-            onChange={(e) => setLatitude(e.target.value)} 
-            step="0.000001"
-            min="-90"
-            max="90"
-            required
-          />
-        </div>
-        
-        <div>
-          <label>Country:</label>
-          <select 
-            value={countryCode} 
+
+        <div className="mt-4">
+          <label className="block text-amber-400 font-semibold">Country:</label>
+          <select
+            value={countryCode}
             onChange={(e) => setCountryCode(e.target.value)}
             required
+            className="w-full p-2 rounded bg-gray-700 text-white focus:ring-2 focus:ring-amber-400 outline-none transition-all duration-300"
           >
             {Object.entries(countryCodeMapping).map(([key, value]) => (
-              <option key={key} value={key}>{value}</option>
+              <option key={key} value={key}>
+                {value}
+              </option>
             ))}
           </select>
         </div>
-        
-        <button type="submit" disabled={loading}>
-          {loading ? 'Predicting...' : 'Predict Disaster'}
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="mt-6 w-full bg-amber-400 text-black font-bold py-2 rounded hover:bg-amber-500 transition-all duration-300 transform hover:scale-105"
+        >
+          {loading ? "Predicting..." : "Predict Disaster"}
         </button>
       </form>
 
-      {error && <div>Error: {error}</div>}
+      <div ref={outputRef} className="mt-4 w-full max-w-md flex flex-col items-center">
+        {error && <div className="mt-4 text-red-500">{error}</div>}
 
-      {prediction && (
-        <div>
-          <h2>Prediction Result</h2>
-          <p><strong>Predicted Disaster:</strong> {prediction.disaster_name}</p>
-          <p><strong>Magnitude Scale:</strong> {prediction.magnitude_scale}</p>
-          <p><strong>Magnitude Value:</strong> {prediction.magnitude_value}</p>
-          <p><strong>Country:</strong> {prediction.country_name}</p>
-        </div>
-      )}
+        {prediction && (
+          <div className="mt-6 bg-gray-800 p-4 rounded shadow-lg w-full">
+            <h2 className="text-xl font-bold text-amber-400">Prediction Result</h2>
+            <p><strong>Predicted Disaster:</strong> {getDisasterName(prediction.disaster_name)}</p>
+            <p><strong>Magnitude Scale:</strong> {prediction.magnitude_scale}</p>
+            <p><strong>Magnitude Value:</strong> {prediction.magnitude_value}</p>
+            <p><strong>Country:</strong> {countryCodeMapping[countryCode]}</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
