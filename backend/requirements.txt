@@ -10,7 +10,7 @@ pyjwt
 mysqlclient
 
 # Machine Learning dependencies
-ipykenrnel
+ipykernel
 pandas
 numpy
 matplotlib
