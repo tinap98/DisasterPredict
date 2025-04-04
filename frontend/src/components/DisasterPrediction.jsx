@@ -230,7 +230,7 @@ function DisasterPrediction() {
         {prediction && (
           <div className="mt-6 bg-gray-800 p-4 rounded shadow-lg w-full">
             <h2 className="text-xl font-bold text-amber-400">Prediction Result</h2>
-            <p><strong>Predicted Disaster:</strong> {getDisasterName(prediction.disaster_name)}</p>
+            <p><strong>Predicted Disaster:</strong> {prediction.disaster_name}</p>
             <p><strong>Magnitude Scale:</strong> {prediction.magnitude_scale}</p>
             <p><strong>Magnitude Value:</strong> {prediction.magnitude_value}</p>
             <p><strong>Country:</strong> {countryCodeMapping[countryCode]}</p>
