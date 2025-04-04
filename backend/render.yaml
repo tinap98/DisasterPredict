@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: disaster-backend
+    env: python
+    region: oregon
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: DATABASE_URL
+        value: mysql://root:PQxAQMvCpAbeyFItkSScHyGCxYiTJqrC@caboose.proxy.rlwy.net:39195/disasterpredict
+      - key: FLASK_ENV
+        value: production
+

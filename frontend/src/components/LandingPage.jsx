@@ -8,12 +8,14 @@ const LandingPage = ({ isAuthenticated, handleLogout }) => {
       <nav className="navbar flex justify-between items-center px-6">
         <h2 className="text-lg font-semibold">DisasterPredict</h2>
         <div className="space-x-6 flex items-center">
-          {["Home", "Disaster News", "Disaster Map", "Donate"].map((item, index) => (
+        {["Home", "Predict Disaster", "Disaster News", "Disaster Map", "Donate"].map((item, index) => (
             <Link
               key={index}
               to={
                 item === "Home"
                   ? "/home"
+                  : item === "Predict Disaster"
+                  ? "/predict-disaster"
                   : item === "Disaster News"
                   ? "/disaster-news"
                   : item === "Disaster Map"

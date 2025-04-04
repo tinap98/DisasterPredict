@@ -1,23 +1,24 @@
 from flask import Blueprint, request, jsonify
-from ml.prediction.predictor import DisasterPredictor  # Import using the ML package structure
+from ml.predict import predict_disaster
 
 prediction_bp = Blueprint('prediction', __name__)
-predictor = DisasterPredictor()
 
-@prediction_bp.route('/disaster', methods=['POST'])
-def predict_disaster():
-    try:
-        data = request.json
-        result = predictor.predict(data)
-        
-        if 'error' in result:
-            return jsonify(result), 400
-            
-        return jsonify({
-            'prediction': result['prediction'],
-            'confidence': result['confidence'],
-            'probabilities': result['probabilities']
-        }), 200
-        
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+@prediction_bp.route('/predict', methods=['POST', 'OPTIONS'])
+def predict():
+    """
+    Endpoint for disaster prediction
+    Expects JSON with:
+    - year
+    - mag_scale_index
+    - dis_mag_value
+    - country_code_index
+    - longitude
+    - latitude
+    """
+    if request.method == 'OPTIONS':
+        response = jsonify({'status': 'preflight'})
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
+        response.headers.add('Access-Control-Allow-Methods', 'POST, OPTIONS')
+        return response
+    
+    return predict_disaster(request)

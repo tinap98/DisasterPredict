@@ -6,7 +6,7 @@ import LandingPage from './components/LandingPage';
 import DisasterNewsComponent from './components/DisasterNewsComponent';
 import MapComponent from './components/MapComponent';
 import DonationForm from './components/DonationForm';
-
+import DisasterPrediction from './components/DisasterPrediction.jsx';
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
@@ -49,7 +49,13 @@ const App = () => {
           />
           <Route 
             path="/home" 
-            element={<LandingPage isAuthenticated={isAuthenticated} handleLogout={handleLogout} />} 
+            element={
+              <LandingPage 
+                isAuthenticated={isAuthenticated} 
+                handleLogout={handleLogout} 
+                currentUser={currentUser} 
+              />
+            } 
           />
           <Route 
             path="/disaster-news" 
@@ -66,6 +72,14 @@ const App = () => {
                 <DonationForm userId={currentUser.id} /> : 
                 <Navigate to="/login" replace />
             } 
+          />
+          <Route 
+            path="/predict-disaster" 
+            element={
+              isAuthenticated ? 
+                <DisasterPrediction currentUser={currentUser} /> : 
+                <Navigate to="/login" replace />
+            }
           />
           <Route 
             path="/" 
