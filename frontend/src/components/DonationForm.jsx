@@ -21,9 +21,9 @@ const DonationForm = ({ userId }) => {
         setError(null);
 
         try {
-            const response = await fetch('${import.meta.env.VITE_API_BASE_URL}/api/donate', {
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/donate`, {
                 method: 'POST',
-                headers: { 
+                headers: {
                     'Content-Type': 'application/json',
                 },
                 credentials: 'include',
@@ -31,8 +31,8 @@ const DonationForm = ({ userId }) => {
                     user_id: userId,
                     amount: parseFloat(amount),
                     currency,
-                    payment_method: 'credit_card'
-                })
+                    payment_method: 'credit_card',
+                }),
             });
 
             if (!response.ok) {
@@ -57,7 +57,7 @@ const DonationForm = ({ userId }) => {
                     <form onSubmit={handleSubmit} className="space-y-4 text-white">
                         <h2 className="text-2xl font-bold text-[#FFC115] text-center">Support Relief Efforts</h2>
                         {error && <div className="text-red-500 text-sm text-center">{error}</div>}
-                        
+
                         <div className="space-y-2">
                             <label className="block text-gray-300">Amount:</label>
                             <input
@@ -73,8 +73,8 @@ const DonationForm = ({ userId }) => {
 
                         <div className="space-y-2">
                             <label className="block text-gray-300">Currency:</label>
-                            <select 
-                                value={currency} 
+                            <select
+                                value={currency}
                                 onChange={(e) => setCurrency(e.target.value)}
                                 className="w-full px-3 py-2 border border-gray-600 rounded-md focus:ring-2 focus:ring-[#FFC115] outline-none bg-gray-800 text-white"
                             >
@@ -118,8 +118,8 @@ const DonationForm = ({ userId }) => {
                             </div>
                         </div>
 
-                        <button 
-                            type="submit" 
+                        <button
+                            type="submit"
                             disabled={isProcessing || !amount}
                             className="w-full py-3 bg-[#FFC115] text-black font-semibold rounded-lg shadow-md hover:bg-amber-500 transition-all duration-200 disabled:bg-gray-400"
                         >
@@ -130,9 +130,14 @@ const DonationForm = ({ userId }) => {
                 ) : (
                     <div className="text-center">
                         <h2 className="text-2xl font-bold text-[#FFC115]">Thank you for your generosity! 💖</h2>
-                        <p className="text-gray-300 mt-2">We've successfully processed your donation of <span className="font-semibold text-white">{transaction.amount} {transaction.currency}</span>.</p>
+                        <p className="text-gray-300 mt-2">
+                            We've successfully processed your donation of{' '}
+                            <span className="font-semibold text-white">
+                                {transaction.amount} {transaction.currency}
+                            </span>.
+                        </p>
                         <p className="text-gray-400 text-sm">Transaction ID: {transaction.transaction_id}</p>
-                        <button 
+                        <button
                             onClick={() => navigate('/home')}
                             className="mt-4 px-6 py-2 bg-[#FFC115] text-black font-semibold rounded-lg shadow-md hover:bg-amber-500 transition-all duration-200"
                         >
