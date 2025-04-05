@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from flask_cors import cross_origin
 from models.donation import Donation
 from database import db
 import time
@@ -6,19 +7,16 @@ import random
 
 donation_bp = Blueprint('donations', __name__)
 
-def _build_cors_preflight_response():
-    response = jsonify({"message": "Preflight Accepted"})
-    response.headers.add("Access-Control-Allow-Origin", "http://localhost:5173")
-    response.headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization")
-    response.headers.add("Access-Control-Allow-Methods", "POST, OPTIONS")
-    response.headers.add("Access-Control-Allow-Credentials", "true")
-    return response
-
 @donation_bp.route('/donate', methods=['POST', 'OPTIONS'])
+@cross_origin(
+    origins=[
+        "http://localhost:5173",
+        "https://disasterpredict.vercel.app",
+        "https://disaster-predict-1nfpgalad-tina-pudaris-projects.vercel.app"
+    ],
+    supports_credentials=True
+)
 def create_donation():
-    if request.method == 'OPTIONS':
-        return _build_cors_preflight_response()
-    
     try:
         data = request.get_json()
         if not data:
@@ -50,24 +48,26 @@ def create_donation():
         db.session.add(donation)
         db.session.commit()
 
-        response = jsonify({
+        return jsonify({
             'message': 'Donation successful!',
             'transaction_id': transaction_id,
             'amount': donation.amount,
             'currency': donation.currency
-        })
-        
-        # Add CORS headers to main response
-        response.headers.add("Access-Control-Allow-Origin", "http://localhost:5173")
-        response.headers.add("Access-Control-Allow-Credentials", "true")
-        
-        return response, 201
+        }), 201
 
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
 
 @donation_bp.route('/donations/<int:user_id>', methods=['GET'])
+@cross_origin(
+    origins=[
+        "http://localhost:5173",
+        "https://disasterpredict.vercel.app",
+        "https://disaster-predict-1nfpgalad-tina-pudaris-projects.vercel.app"
+    ],
+    supports_credentials=True
+)
 def get_user_donations(user_id):
     try:
         donations = Donation.query.filter_by(user_id=user_id).all()

@@ -17,12 +17,14 @@ from models.donation import Donation
 app = Flask(__name__)
 
 
-CORS(app, 
+CORS(app,
      origins=[
-         "http://localhost:5173", 
+         "http://localhost:5173",
          "https://disasterpredict.vercel.app",
          "https://disaster-predict-1nfpgalad-tina-pudaris-projects.vercel.app"
      ],
+     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+     allow_headers=["Content-Type", "Authorization"],
      supports_credentials=True)
 
 # Set up caching
