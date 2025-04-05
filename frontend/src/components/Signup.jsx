@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
+import toast, { Toaster } from "react-hot-toast";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -8,21 +9,26 @@ const Signup = () => {
     email: "",
     password: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSignup = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       await axios.post("http://localhost:5000/register", formData);
-      alert("Registration successful! Please login.");
+      toast.success("Registration successful! Please login.");
       navigate("/login");
     } catch (error) {
-      alert(error.response?.data?.error || "Registration failed");
+      toast.error(error.response?.data?.error || "Registration failed");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-black">
+      <Toaster position="top-center" />
       <form
         onSubmit={handleSignup}
         className="bg-black/60 shadow-lg rounded-lg p-8 w-96 border border-amber-500"
@@ -62,15 +68,16 @@ const Signup = () => {
         />
         <button
           type="submit"
-          className="w-full bg-amber-500 text-black font-semibold py-2 px-4 rounded-md hover:bg-amber-600 transition-all duration-300"
+          disabled={isLoading}
+          className="w-full bg-amber-500 text-black font-semibold py-2 px-4 rounded-md hover:bg-amber-600 transition-all duration-300 disabled:opacity-50"
         >
-          Register
+          {isLoading ? "Registering..." : "Register"}
         </button>
         <p className="mt-4 text-center text-gray-300">
           Already have an account?{" "}
-          <a href="/login" className="text-amber-400 hover:underline">
+          <Link to="/login" className="text-amber-400 hover:underline">
             Log in
-          </a>
+          </Link>
         </p>
       </form>
     </div>
