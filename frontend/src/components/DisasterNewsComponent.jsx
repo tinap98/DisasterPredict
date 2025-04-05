@@ -11,7 +11,7 @@ const DisasterNewsComponent = () => {
     const fetchNews = async () => {
       try {
         setLoading(true);
-        const response = await fetch('http://127.0.0.1:5000/api/disaster-news'); 
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/disaster-news`); 
         if (!response.ok) {
           throw new Error(`Error fetching news: ${response.status}`);
         }

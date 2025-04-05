@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-
+const apiUrl = import.meta.env.VITE_API_BASE_URL;
 function DisasterPrediction() {
   const [year, setYear] = useState(1900);
   const [magScale, setMagScale] = useState(0);
@@ -66,7 +66,7 @@ function DisasterPrediction() {
     setError(null);
 
     try {
-      const response = await fetch("http://localhost:5000/api/predict", {
+      const response = await fetch(`${apiUrl}/api/predict`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

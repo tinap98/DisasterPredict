@@ -21,7 +21,7 @@ const DonationForm = ({ userId }) => {
         setError(null);
 
         try {
-            const response = await fetch('http://localhost:5000/api/donate', {
+            const response = await fetch('${import.meta.env.VITE_API_BASE_URL}/api/donate', {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json',
