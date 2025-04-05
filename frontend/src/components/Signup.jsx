@@ -16,7 +16,12 @@ const Signup = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      await axios.post("http://localhost:5000/register", formData);
+      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/register`, formData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      });      
       toast.success("Registration successful! Please login.");
       navigate("/login");
     } catch (error) {

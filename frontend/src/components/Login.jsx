@@ -15,7 +15,7 @@ const Login = ({ setIsAuthenticated, setCurrentUser }) => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("${import.meta.env.VITE_API_BASE_URL}/login", formData);
+      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/login`, formData);
       
       // Store authentication token
       localStorage.setItem("authToken", response.data.token);
