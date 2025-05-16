@@ -135,8 +135,7 @@ function DisasterPrediction() {
             value={year}
             onChange={(e) => setYear(e.target.value)}
             min="1900"
-            max={new Date().getFullYear()}
-            required
+            max="2100"
             className="w-full p-2 rounded bg-gray-700 text-white focus:ring-2 focus:ring-amber-400 outline-none transition-all duration-300"
           />
         </div>
