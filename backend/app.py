@@ -26,8 +26,10 @@ CORS(app,
          "https://disaster-predict-1nfpgalad-tina-pudaris-projects.vercel.app"
      ],
      methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-     allow_headers=["Content-Type", "Authorization"],
-     supports_credentials=True)
+     allow_headers=["Content-Type", "Authorization", "Accept", "Origin"],
+     supports_credentials=True,
+     expose_headers=["Content-Type", "Authorization"],
+     max_age=600)
 
 # Load config
 app.config.from_object(Config)
