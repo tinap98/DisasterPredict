@@ -4,10 +4,11 @@ services:
     env: python
     region: oregon
     plan: free
-    buildCommand: "pip install -r requirements.txt && flask db upgrade"
+    buildCommand: "pip install -r requirements.txt"
     startCommand: "gunicorn app:app"
     envVars:
-      - key: DATABASE_URL
+      - key: FLASK_APP
+        value: app.py
       - key: FLASK_ENV
         value: production
 

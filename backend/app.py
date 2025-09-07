@@ -40,6 +40,11 @@ cache.init_app(app)
 init_db(app)
 bcrypt.init_app(app)
 
+# Create all database tables
+with app.app_context():
+    db.create_all()
+    print("Database tables created successfully!")
+
 # Register blueprints
 from routes.auth_routes import auth_bp
 from routes.news_routes import news_bp, register_cache
