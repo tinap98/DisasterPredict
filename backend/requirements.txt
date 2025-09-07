@@ -9,6 +9,8 @@ flask-bcrypt
 pyjwt
 mysqlclient
 gunicorn
+Flask-Migrate
+psycopg2-binary
 
 # Machine Learning dependencies
 ipykernel

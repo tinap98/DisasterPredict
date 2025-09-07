@@ -30,7 +30,8 @@ DisasterPredict is a full-stack web application that leverages AI to predict nat
 
 ### Backend
 - Flask (Python)
-- MySQL (hosted on Railway)
+- PostgreSQL (hosted on Render)
+- SQLite (for local development)
 - Flask-Caching
 - Gunicorn (for deployment)
 - Render (deployment platform)
@@ -63,12 +64,21 @@ DisasterPredict is a full-stack web application that leverages AI to predict nat
    pip install -r requirements.txt
    ```
 
-3. **Create `.env` file**
+3. **Set up the database**
+   For local development, the app uses an SQLite database. Initialize it with:
    ```bash
-   cp .env.example .env
+   flask init-db
    ```
 
-4. **Run the Flask server locally**
+4. **(Optional) Create `.env` file**
+   To use API keys for news services, create a `.env` file in the `backend` directory and add your keys:
+   ```
+   NEWSAPI_KEY=your_key_here
+   GUARDIAN_KEY=your_key_here
+   JWT_SECRET_KEY=your_secret_key
+   ```
+
+5. **Run the Flask server locally**
    ```bash
    python app.py
    ```

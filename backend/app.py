@@ -10,7 +10,7 @@ from flask import Flask
 from flask_cors import CORS
 from flask_caching import Cache
 from config import Config
-from database import init_db, bcrypt
+from database import init_db, bcrypt, create_tables
 from models.user import User
 from models.donation import Donation
 
@@ -51,6 +51,12 @@ app.register_blueprint(auth_bp)
 app.register_blueprint(news_bp)
 app.register_blueprint(donation_bp, url_prefix='/api')
 app.register_blueprint(prediction_bp, url_prefix='/api')
+
+@app.cli.command("init-db")
+def init_db_command():
+    """Creates the database tables."""
+    create_tables(app)
+    print("Initialized the database.")
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
