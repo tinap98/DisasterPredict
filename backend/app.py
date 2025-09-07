@@ -9,12 +9,14 @@ sys.path.append(str(backend_dir))
 from flask import Flask
 from flask_cors import CORS
 from flask_caching import Cache
+from flask_migrate import Migrate
 from config import Config
-from database import init_db, bcrypt, create_tables
+from database import init_db, bcrypt, db
 from models.user import User
 from models.donation import Donation
 
 app = Flask(__name__)
+migrate = Migrate(app, db)
 
 # Enable CORS
 CORS(app,
@@ -55,7 +57,8 @@ app.register_blueprint(prediction_bp, url_prefix='/api')
 @app.cli.command("init-db")
 def init_db_command():
     """Creates the database tables."""
-    create_tables(app)
+    with app.app_context():
+        db.create_all()
     print("Initialized the database.")
 
 if __name__ == '__main__':
